@@ -1,0 +1,1764 @@
+﻿# module.eks.data.aws_caller_identity.current[0]:
+data "aws_caller_identity" "current" {
+    account_id = "583192270368"
+    arn        = "arn:aws:iam::583192270368:user/Smit"
+    id         = "583192270368"
+    user_id    = "AIDAYPSHX2YQBOXKSZCX4"
+}
+
+# module.eks.data.aws_iam_policy_document.assume_role_policy[0]:
+data "aws_iam_policy_document" "assume_role_policy" {
+    id            = "2830595799"
+    json          = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = [
+                        "sts:TagSession",
+                        "sts:AssumeRole",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        Service = "eks.amazonaws.com"
+                    }
+                    Sid       = "EKSClusterAssumeRole"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    minified_json = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = [
+                        "sts:TagSession",
+                        "sts:AssumeRole",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        Service = "eks.amazonaws.com"
+                    }
+                    Sid       = "EKSClusterAssumeRole"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    version       = "2012-10-17"
+
+    statement {
+        actions       = [
+            "sts:AssumeRole",
+            "sts:TagSession",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = []
+        sid           = "EKSClusterAssumeRole"
+
+        principals {
+            identifiers = [
+                "eks.amazonaws.com",
+            ]
+            type        = "Service"
+        }
+    }
+}
+
+# module.eks.data.aws_iam_policy_document.custom[0]:
+data "aws_iam_policy_document" "custom" {
+    id            = "513122117"
+    json          = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = [
+                        "ec2:RunInstances",
+                        "ec2:CreateLaunchTemplate",
+                        "ec2:CreateFleet",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                        StringLike   = {
+                            "aws:RequestTag/eks:kubernetes-node-class-name" = "*"
+                            "aws:RequestTag/eks:kubernetes-node-pool-name"  = "*"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "Compute"
+                },
+                {
+                    Action    = [
+                        "ec2:CreateVolume",
+                        "ec2:CreateSnapshot",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = [
+                        "arn:aws:ec2:*:*:volume/*",
+                        "arn:aws:ec2:*:*:snapshot/*",
+                    ]
+                    Sid       = "Storage"
+                },
+                {
+                    Action    = "ec2:CreateNetworkInterface"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name"         = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            "aws:RequestTag/eks:kubernetes-cni-node-name" = "*"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "Networking"
+                },
+                {
+                    Action    = [
+                        "elasticloadbalancing:CreateTargetGroup",
+                        "elasticloadbalancing:CreateRule",
+                        "elasticloadbalancing:CreateLoadBalancer",
+                        "elasticloadbalancing:CreateListener",
+                        "ec2:CreateSecurityGroup",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "LoadBalancer"
+                },
+                {
+                    Action    = "shield:CreateProtection"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "ShieldProtection"
+                },
+                {
+                    Action    = "shield:TagResource"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "arn:aws:shield::*:protection/*"
+                    Sid       = "ShieldTagResource"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    minified_json = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = [
+                        "ec2:RunInstances",
+                        "ec2:CreateLaunchTemplate",
+                        "ec2:CreateFleet",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                        StringLike   = {
+                            "aws:RequestTag/eks:kubernetes-node-class-name" = "*"
+                            "aws:RequestTag/eks:kubernetes-node-pool-name"  = "*"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "Compute"
+                },
+                {
+                    Action    = [
+                        "ec2:CreateVolume",
+                        "ec2:CreateSnapshot",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = [
+                        "arn:aws:ec2:*:*:volume/*",
+                        "arn:aws:ec2:*:*:snapshot/*",
+                    ]
+                    Sid       = "Storage"
+                },
+                {
+                    Action    = "ec2:CreateNetworkInterface"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name"         = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            "aws:RequestTag/eks:kubernetes-cni-node-name" = "*"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "Networking"
+                },
+                {
+                    Action    = [
+                        "elasticloadbalancing:CreateTargetGroup",
+                        "elasticloadbalancing:CreateRule",
+                        "elasticloadbalancing:CreateLoadBalancer",
+                        "elasticloadbalancing:CreateListener",
+                        "ec2:CreateSecurityGroup",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "LoadBalancer"
+                },
+                {
+                    Action    = "shield:CreateProtection"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "ShieldProtection"
+                },
+                {
+                    Action    = "shield:TagResource"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "arn:aws:shield::*:protection/*"
+                    Sid       = "ShieldTagResource"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    version       = "2012-10-17"
+
+    statement {
+        actions       = [
+            "ec2:CreateFleet",
+            "ec2:CreateLaunchTemplate",
+            "ec2:RunInstances",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "*",
+        ]
+        sid           = "Compute"
+
+        condition {
+            test     = "StringEquals"
+            values   = [
+                "${aws:PrincipalTag/eks:eks-cluster-name}",
+            ]
+            variable = "aws:RequestTag/eks:eks-cluster-name"
+        }
+        condition {
+            test     = "StringLike"
+            values   = [
+                "*",
+            ]
+            variable = "aws:RequestTag/eks:kubernetes-node-class-name"
+        }
+        condition {
+            test     = "StringLike"
+            values   = [
+                "*",
+            ]
+            variable = "aws:RequestTag/eks:kubernetes-node-pool-name"
+        }
+    }
+    statement {
+        actions       = [
+            "ec2:CreateSnapshot",
+            "ec2:CreateVolume",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "arn:aws:ec2:*:*:snapshot/*",
+            "arn:aws:ec2:*:*:volume/*",
+        ]
+        sid           = "Storage"
+
+        condition {
+            test     = "StringEquals"
+            values   = [
+                "${aws:PrincipalTag/eks:eks-cluster-name}",
+            ]
+            variable = "aws:RequestTag/eks:eks-cluster-name"
+        }
+    }
+    statement {
+        actions       = [
+            "ec2:CreateNetworkInterface",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "*",
+        ]
+        sid           = "Networking"
+
+        condition {
+            test     = "StringEquals"
+            values   = [
+                "${aws:PrincipalTag/eks:eks-cluster-name}",
+            ]
+            variable = "aws:RequestTag/eks:eks-cluster-name"
+        }
+        condition {
+            test     = "StringEquals"
+            values   = [
+                "*",
+            ]
+            variable = "aws:RequestTag/eks:kubernetes-cni-node-name"
+        }
+    }
+    statement {
+        actions       = [
+            "ec2:CreateSecurityGroup",
+            "elasticloadbalancing:CreateListener",
+            "elasticloadbalancing:CreateLoadBalancer",
+            "elasticloadbalancing:CreateRule",
+            "elasticloadbalancing:CreateTargetGroup",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "*",
+        ]
+        sid           = "LoadBalancer"
+
+        condition {
+            test     = "StringEquals"
+            values   = [
+                "${aws:PrincipalTag/eks:eks-cluster-name}",
+            ]
+            variable = "aws:RequestTag/eks:eks-cluster-name"
+        }
+    }
+    statement {
+        actions       = [
+            "shield:CreateProtection",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "*",
+        ]
+        sid           = "ShieldProtection"
+
+        condition {
+            test     = "StringEquals"
+            values   = [
+                "${aws:PrincipalTag/eks:eks-cluster-name}",
+            ]
+            variable = "aws:RequestTag/eks:eks-cluster-name"
+        }
+    }
+    statement {
+        actions       = [
+            "shield:TagResource",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "arn:aws:shield::*:protection/*",
+        ]
+        sid           = "ShieldTagResource"
+
+        condition {
+            test     = "StringEquals"
+            values   = [
+                "${aws:PrincipalTag/eks:eks-cluster-name}",
+            ]
+            variable = "aws:RequestTag/eks:eks-cluster-name"
+        }
+    }
+}
+
+# module.eks.data.aws_iam_session_context.current[0]:
+data "aws_iam_session_context" "current" {
+    arn          = "arn:aws:iam::583192270368:user/Smit"
+    id           = "arn:aws:iam::583192270368:user/Smit"
+    issuer_arn   = "arn:aws:iam::583192270368:user/Smit"
+    issuer_id    = null
+    issuer_name  = null
+    session_name = null
+}
+
+# module.eks.data.aws_partition.current[0]:
+data "aws_partition" "current" {
+    dns_suffix         = "amazonaws.com"
+    id                 = "aws"
+    partition          = "aws"
+    reverse_dns_prefix = "com.amazonaws"
+}
+
+# module.eks.aws_cloudwatch_log_group.this[0]:
+resource "aws_cloudwatch_log_group" "this" {
+    arn               = "arn:aws:logs:ap-south-1:583192270368:log-group:/aws/eks/fashionassit/cluster"
+    id                = "/aws/eks/fashionassit/cluster"
+    kms_key_id        = null
+    log_group_class   = "STANDARD"
+    name              = "/aws/eks/fashionassit/cluster"
+    name_prefix       = null
+    retention_in_days = 90
+    skip_destroy      = false
+    tags              = {
+        "Managed" = "terraform"
+        "Name"    = "/aws/eks/fashionassit/cluster"
+    }
+    tags_all          = {
+        "Managed" = "terraform"
+        "Name"    = "/aws/eks/fashionassit/cluster"
+    }
+}
+
+# module.eks.aws_ec2_tag.cluster_primary_security_group["Managed"]:
+resource "aws_ec2_tag" "cluster_primary_security_group" {
+    id          = "sg-091bd36d092f6fdc3,Managed"
+    key         = "Managed"
+    resource_id = "sg-091bd36d092f6fdc3"
+    value       = "terraform"
+}
+
+# module.eks.aws_eks_access_entry.this["cluster_creator"]:
+resource "aws_eks_access_entry" "this" {
+    access_entry_arn  = "arn:aws:eks:ap-south-1:583192270368:access-entry/fashionassit/user/583192270368/Smit/18cc8c4f-5d3c-7454-efaf-d032e340371b"
+    cluster_name      = "fashionassit"
+    created_at        = "2025-09-05T06:44:39Z"
+    id                = "fashionassit:arn:aws:iam::583192270368:user/Smit"
+    kubernetes_groups = []
+    modified_at       = "2025-09-05T06:44:39Z"
+    principal_arn     = "arn:aws:iam::583192270368:user/Smit"
+    tags              = {
+        "Managed" = "terraform"
+    }
+    tags_all          = {
+        "Managed" = "terraform"
+    }
+    type              = "STANDARD"
+    user_name         = "arn:aws:iam::583192270368:user/Smit"
+}
+
+# module.eks.aws_eks_access_policy_association.this["cluster_creator_admin"]:
+resource "aws_eks_access_policy_association" "this" {
+    associated_at = "2025-09-05 06:44:41.194 +0000 UTC"
+    cluster_name  = "fashionassit"
+    id            = "fashionassit#arn:aws:iam::583192270368:user/Smit#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    modified_at   = "2025-09-05 06:44:41.194 +0000 UTC"
+    policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+    principal_arn = "arn:aws:iam::583192270368:user/Smit"
+
+    access_scope {
+        namespaces = []
+        type       = "cluster"
+    }
+}
+
+# module.eks.aws_eks_cluster.this[0]:
+resource "aws_eks_cluster" "this" {
+    arn                           = "arn:aws:eks:ap-south-1:583192270368:cluster/fashionassit"
+    bootstrap_self_managed_addons = true
+    certificate_authority         = [
+        {
+            data = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJYVBPMzhjcjRYVTR3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBNU1EVXdOak0zTWpWYUZ3MHpOVEE1TURNd05qUXlNalZhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUMyT1JMZmhNbXJzajRrOWFsSTViaTdQdy9manQ2ZmNPTm1mQjlISUlubU8wbUlyT09DcEEvMGxieWcKalZzRkh3SkFIeEZCTUxjdy93MG0zNjRid3hQMUMwbWtEWTczZSswRkNwWVZweEtxY0VoSXhkY2xkZkFXb0lnYwpOVVBHczA5TXFLN3E0WFUzdTVPZ1V6RzlqSmZ3Q0RzVlp4cE1waGtlWHJPWGIrS3poNUZPUVByRmtSYk9Ecm5BClkzb0NrU1YvY2xmc2xNcjNCUyszUHBvSDFlNFQrSkVpVUJHS3EvZlcxUzFOay82KzBOTHYxSzIxZ0xDVFFmNjAKdHRXK21QR0hDSXduV2s2UnpNR3lqQTNQSmx5dytSdXlnUklycWtEeHBrZUgwM3ZiTG5NNTR3WWgxTlYvVHlqVQp6ei90bHdWRVEwcVZkWnp1TGlWRDdONFFRaHd4QWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJRUG9aWjlPUExWanh2T2FVK1pQS0Iyc2NjT1VqQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQTR1WDNiZWZuRwpUWmRRWXp4K1FsN1llbXNtT1VZUHpCcmFMbytiRjNnaDkzN2hsTnpobjJMaG1vZDVxa0hhdGtva3dPTTRIMkNOCk0rdmt6TjNjbGJiT25GWC9LUC9BMzJpUitsZm1jclJFTEs2MFYvMFFadW9jaUxVYjRuTDZMNUYxb1A4STkrYjkKbWhNRkJWQW0wSW5IVWR0L0poSDNEZWhxR3EwemwwRUFIcVI4YWF6Zk56K0gyRHkxeDZFS3BiaVlrVEw3L2E2ZApoYmRQbGJCb2RXQzVLdG1TNFd5SlF2UXBjVTlDVTBiYkFyQXdGVmgveWY5alJXVk4rUkovQjFRdVNuaERKR2RtCks3UWVCMFhQTmVWYVhHaG9odExxUGlYUkpFZ3pOYmVuRW81N2IwOWhUOFlSaytpLytxRkxSODR1ZVkrdEU0ZGoKQkdzK2g3RzUyUDQ5Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+        },
+    ]
+    created_at                    = "2025-09-05T06:37:57Z"
+    enabled_cluster_log_types     = [
+        "api",
+        "audit",
+        "authenticator",
+    ]
+    endpoint                      = "https://E05FB674494B647917F2A088BBE07C67.gr7.ap-south-1.eks.amazonaws.com"
+    id                            = "fashionassit"
+    identity                      = [
+        {
+            oidc = [
+                {
+                    issuer = "https://oidc.eks.ap-south-1.amazonaws.com/id/E05FB674494B647917F2A088BBE07C67"
+                },
+            ]
+        },
+    ]
+    name                          = "fashionassit"
+    platform_version              = "eks.19"
+    role_arn                      = "arn:aws:iam::583192270368:role/fashionassit-cluster-20250905063734841600000001"
+    status                        = "ACTIVE"
+    tags                          = {
+        "Managed"               = "terraform"
+        "terraform-aws-modules" = "eks"
+    }
+    tags_all                      = {
+        "Managed"               = "terraform"
+        "terraform-aws-modules" = "eks"
+    }
+    version                       = "1.33"
+
+    access_config {
+        authentication_mode                         = "API_AND_CONFIG_MAP"
+        bootstrap_cluster_creator_admin_permissions = false
+    }
+
+    encryption_config {
+        resources = [
+            "secrets",
+        ]
+
+        provider {
+            key_arn = "arn:aws:kms:ap-south-1:583192270368:key/5d462d66-d26e-4a93-8b3b-bb60ec508562"
+        }
+    }
+
+    kubernetes_network_config {
+        ip_family         = "ipv4"
+        service_ipv4_cidr = "10.100.0.0/16"
+        service_ipv6_cidr = null
+
+        elastic_load_balancing {
+            enabled = false
+        }
+    }
+
+    timeouts {}
+
+    upgrade_policy {
+        support_type = "EXTENDED"
+    }
+
+    vpc_config {
+        cluster_security_group_id = "sg-091bd36d092f6fdc3"
+        endpoint_private_access   = false
+        endpoint_public_access    = true
+        public_access_cidrs       = [
+            "0.0.0.0/0",
+        ]
+        security_group_ids        = [
+            "sg-0ea31616d83f68096",
+        ]
+        subnet_ids                = [
+            "subnet-00e6626576fc24d03",
+            "subnet-099eb3166e0900346",
+            "subnet-0e298ceb8b68ecc78",
+        ]
+        vpc_id                    = "vpc-0c8ed77e28e92fefb"
+    }
+}
+
+# module.eks.aws_iam_openid_connect_provider.oidc_provider[0]:
+resource "aws_iam_openid_connect_provider" "oidc_provider" {
+    arn             = "arn:aws:iam::583192270368:oidc-provider/oidc.eks.ap-south-1.amazonaws.com/id/E05FB674494B647917F2A088BBE07C67"
+    client_id_list  = [
+        "sts.amazonaws.com",
+    ]
+    id              = "arn:aws:iam::583192270368:oidc-provider/oidc.eks.ap-south-1.amazonaws.com/id/E05FB674494B647917F2A088BBE07C67"
+    tags            = {
+        "Managed" = "terraform"
+        "Name"    = "fashionassit-eks-irsa"
+    }
+    tags_all        = {
+        "Managed" = "terraform"
+        "Name"    = "fashionassit-eks-irsa"
+    }
+    thumbprint_list = [
+        "06b25927c42a721631c1efd9431e648fa62e1e39",
+    ]
+    url             = "oidc.eks.ap-south-1.amazonaws.com/id/E05FB674494B647917F2A088BBE07C67"
+}
+
+# module.eks.aws_iam_policy.cluster_encryption[0]:
+resource "aws_iam_policy" "cluster_encryption" {
+    arn              = "arn:aws:iam::583192270368:policy/fashionassit-cluster-ClusterEncryption2025090506375939500000000c"
+    attachment_count = 1
+    description      = "Cluster encryption policy to allow cluster role to utilize CMK provided"
+    id               = "arn:aws:iam::583192270368:policy/fashionassit-cluster-ClusterEncryption2025090506375939500000000c"
+    name             = "fashionassit-cluster-ClusterEncryption2025090506375939500000000c"
+    name_prefix      = "fashionassit-cluster-ClusterEncryption"
+    path             = "/"
+    policy           = jsonencode(
+        {
+            Statement = [
+                {
+                    Action   = [
+                        "kms:Encrypt",
+                        "kms:Decrypt",
+                        "kms:ListGrants",
+                        "kms:DescribeKey",
+                    ]
+                    Effect   = "Allow"
+                    Resource = "arn:aws:kms:ap-south-1:583192270368:key/5d462d66-d26e-4a93-8b3b-bb60ec508562"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    policy_id        = "ANPAYPSHX2YQFV3YZRIKF"
+    tags             = {
+        "Managed" = "terraform"
+    }
+    tags_all         = {
+        "Managed" = "terraform"
+    }
+}
+
+# module.eks.aws_iam_policy.custom[0]:
+resource "aws_iam_policy" "custom" {
+    arn              = "arn:aws:iam::583192270368:policy/fashionassit-cluster-20250905063734841600000002"
+    attachment_count = 1
+    description      = null
+    id               = "arn:aws:iam::583192270368:policy/fashionassit-cluster-20250905063734841600000002"
+    name             = "fashionassit-cluster-20250905063734841600000002"
+    name_prefix      = "fashionassit-cluster-"
+    path             = "/"
+    policy           = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = [
+                        "ec2:RunInstances",
+                        "ec2:CreateLaunchTemplate",
+                        "ec2:CreateFleet",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                        StringLike   = {
+                            "aws:RequestTag/eks:kubernetes-node-class-name" = "*"
+                            "aws:RequestTag/eks:kubernetes-node-pool-name"  = "*"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "Compute"
+                },
+                {
+                    Action    = [
+                        "ec2:CreateVolume",
+                        "ec2:CreateSnapshot",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = [
+                        "arn:aws:ec2:*:*:volume/*",
+                        "arn:aws:ec2:*:*:snapshot/*",
+                    ]
+                    Sid       = "Storage"
+                },
+                {
+                    Action    = "ec2:CreateNetworkInterface"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name"         = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            "aws:RequestTag/eks:kubernetes-cni-node-name" = "*"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "Networking"
+                },
+                {
+                    Action    = [
+                        "elasticloadbalancing:CreateTargetGroup",
+                        "elasticloadbalancing:CreateRule",
+                        "elasticloadbalancing:CreateLoadBalancer",
+                        "elasticloadbalancing:CreateListener",
+                        "ec2:CreateSecurityGroup",
+                    ]
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "LoadBalancer"
+                },
+                {
+                    Action    = "shield:CreateProtection"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "*"
+                    Sid       = "ShieldProtection"
+                },
+                {
+                    Action    = "shield:TagResource"
+                    Condition = {
+                        StringEquals = {
+                            "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                        }
+                    }
+                    Effect    = "Allow"
+                    Resource  = "arn:aws:shield::*:protection/*"
+                    Sid       = "ShieldTagResource"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    policy_id        = "ANPAYPSHX2YQDCE4O3JFT"
+    tags             = {
+        "Managed" = "terraform"
+    }
+    tags_all         = {
+        "Managed" = "terraform"
+    }
+}
+
+# module.eks.aws_iam_role.this[0]:
+resource "aws_iam_role" "this" {
+    arn                   = "arn:aws:iam::583192270368:role/fashionassit-cluster-20250905063734841600000001"
+    assume_role_policy    = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = [
+                        "sts:TagSession",
+                        "sts:AssumeRole",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        Service = "eks.amazonaws.com"
+                    }
+                    Sid       = "EKSClusterAssumeRole"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    create_date           = "2025-09-05T06:37:31Z"
+    description           = null
+    force_detach_policies = true
+    id                    = "fashionassit-cluster-20250905063734841600000001"
+    managed_policy_arns   = [
+        "arn:aws:iam::583192270368:policy/fashionassit-cluster-20250905063734841600000002",
+        "arn:aws:iam::583192270368:policy/fashionassit-cluster-ClusterEncryption2025090506375939500000000c",
+        "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+        "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
+    ]
+    max_session_duration  = 3600
+    name                  = "fashionassit-cluster-20250905063734841600000001"
+    name_prefix           = "fashionassit-cluster-"
+    path                  = "/"
+    permissions_boundary  = null
+    tags                  = {
+        "Managed" = "terraform"
+    }
+    tags_all              = {
+        "Managed" = "terraform"
+    }
+    unique_id             = "AROAYPSHX2YQGNG5DG32S"
+}
+
+# module.eks.aws_iam_role_policy_attachment.cluster_encryption[0]:
+resource "aws_iam_role_policy_attachment" "cluster_encryption" {
+    id         = "fashionassit-cluster-20250905063734841600000001-2025090506380066400000000d"
+    policy_arn = "arn:aws:iam::583192270368:policy/fashionassit-cluster-ClusterEncryption2025090506375939500000000c"
+    role       = "fashionassit-cluster-20250905063734841600000001"
+}
+
+# module.eks.aws_iam_role_policy_attachment.custom[0]:
+resource "aws_iam_role_policy_attachment" "custom" {
+    id         = "fashionassit-cluster-20250905063734841600000001-20250905063738033800000008"
+    policy_arn = "arn:aws:iam::583192270368:policy/fashionassit-cluster-20250905063734841600000002"
+    role       = "fashionassit-cluster-20250905063734841600000001"
+}
+
+# module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]:
+resource "aws_iam_role_policy_attachment" "this" {
+    id         = "fashionassit-cluster-20250905063734841600000001-20250905063738033800000007"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+    role       = "fashionassit-cluster-20250905063734841600000001"
+}
+
+# module.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]:
+resource "aws_iam_role_policy_attachment" "this" {
+    id         = "fashionassit-cluster-20250905063734841600000001-20250905063737419500000006"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+    role       = "fashionassit-cluster-20250905063734841600000001"
+}
+
+# module.eks.aws_security_group.cluster[0]:
+resource "aws_security_group" "cluster" {
+    arn                    = "arn:aws:ec2:ap-south-1:583192270368:security-group/sg-0ea31616d83f68096"
+    description            = "EKS cluster security group"
+    egress                 = []
+    id                     = "sg-0ea31616d83f68096"
+    ingress                = [
+        {
+            cidr_blocks      = []
+            description      = "Node groups to cluster API"
+            from_port        = 443
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = [
+                "sg-0ade07234ea2ca0ef",
+            ]
+            self             = false
+            to_port          = 443
+        },
+    ]
+    name                   = "fashionassit-cluster-20250905063734841600000003"
+    name_prefix            = "fashionassit-cluster-"
+    owner_id               = "583192270368"
+    revoke_rules_on_delete = false
+    tags                   = {
+        "Managed" = "terraform"
+        "Name"    = "fashionassit-cluster"
+    }
+    tags_all               = {
+        "Managed" = "terraform"
+        "Name"    = "fashionassit-cluster"
+    }
+    vpc_id                 = "vpc-0c8ed77e28e92fefb"
+}
+
+# module.eks.aws_security_group.node[0]:
+resource "aws_security_group" "node" {
+    arn                    = "arn:aws:ec2:ap-south-1:583192270368:security-group/sg-0ade07234ea2ca0ef"
+    description            = "EKS node shared security group"
+    egress                 = [
+        {
+            cidr_blocks      = [
+                "0.0.0.0/0",
+            ]
+            description      = "Allow all egress"
+            from_port        = 0
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "-1"
+            security_groups  = []
+            self             = false
+            to_port          = 0
+        },
+    ]
+    id                     = "sg-0ade07234ea2ca0ef"
+    ingress                = [
+        {
+            cidr_blocks      = []
+            description      = "Cluster API to node 4443/tcp webhook"
+            from_port        = 4443
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = [
+                "sg-0ea31616d83f68096",
+            ]
+            self             = false
+            to_port          = 4443
+        },
+        {
+            cidr_blocks      = []
+            description      = "Cluster API to node 6443/tcp webhook"
+            from_port        = 6443
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = [
+                "sg-0ea31616d83f68096",
+            ]
+            self             = false
+            to_port          = 6443
+        },
+        {
+            cidr_blocks      = []
+            description      = "Cluster API to node 8443/tcp webhook"
+            from_port        = 8443
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = [
+                "sg-0ea31616d83f68096",
+            ]
+            self             = false
+            to_port          = 8443
+        },
+        {
+            cidr_blocks      = []
+            description      = "Cluster API to node 9443/tcp webhook"
+            from_port        = 9443
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = [
+                "sg-0ea31616d83f68096",
+            ]
+            self             = false
+            to_port          = 9443
+        },
+        {
+            cidr_blocks      = []
+            description      = "Cluster API to node groups"
+            from_port        = 443
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = [
+                "sg-0ea31616d83f68096",
+            ]
+            self             = false
+            to_port          = 443
+        },
+        {
+            cidr_blocks      = []
+            description      = "Cluster API to node kubelets"
+            from_port        = 10250
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = [
+                "sg-0ea31616d83f68096",
+            ]
+            self             = false
+            to_port          = 10250
+        },
+        {
+            cidr_blocks      = []
+            description      = "Node to node CoreDNS UDP"
+            from_port        = 53
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "udp"
+            security_groups  = []
+            self             = true
+            to_port          = 53
+        },
+        {
+            cidr_blocks      = []
+            description      = "Node to node CoreDNS"
+            from_port        = 53
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = []
+            self             = true
+            to_port          = 53
+        },
+        {
+            cidr_blocks      = []
+            description      = "Node to node ingress on ephemeral ports"
+            from_port        = 1025
+            ipv6_cidr_blocks = []
+            prefix_list_ids  = []
+            protocol         = "tcp"
+            security_groups  = []
+            self             = true
+            to_port          = 65535
+        },
+    ]
+    name                   = "fashionassit-node-20250905063734842700000005"
+    name_prefix            = "fashionassit-node-"
+    owner_id               = "583192270368"
+    revoke_rules_on_delete = false
+    tags                   = {
+        "Managed"                            = "terraform"
+        "Name"                               = "fashionassit-node"
+        "kubernetes.io/cluster/fashionassit" = "owned"
+    }
+    tags_all               = {
+        "Managed"                            = "terraform"
+        "Name"                               = "fashionassit-node"
+        "kubernetes.io/cluster/fashionassit" = "owned"
+    }
+    vpc_id                 = "vpc-0c8ed77e28e92fefb"
+}
+
+# module.eks.aws_security_group_rule.cluster["ingress_nodes_443"]:
+resource "aws_security_group_rule" "cluster" {
+    description              = "Node groups to cluster API"
+    from_port                = 443
+    id                       = "sgrule-1377663733"
+    protocol                 = "tcp"
+    security_group_id        = "sg-0ea31616d83f68096"
+    security_group_rule_id   = "sgr-0d706713948cad280"
+    self                     = false
+    source_security_group_id = "sg-0ade07234ea2ca0ef"
+    to_port                  = 443
+    type                     = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["egress_all"]:
+resource "aws_security_group_rule" "node" {
+    cidr_blocks            = [
+        "0.0.0.0/0",
+    ]
+    description            = "Allow all egress"
+    from_port              = 0
+    id                     = "sgrule-3153331924"
+    prefix_list_ids        = []
+    protocol               = "-1"
+    security_group_id      = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id = "sgr-0ca4b0b2d2fb7879a"
+    self                   = false
+    to_port                = 0
+    type                   = "egress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_cluster_443"]:
+resource "aws_security_group_rule" "node" {
+    description              = "Cluster API to node groups"
+    from_port                = 443
+    id                       = "sgrule-1867785675"
+    prefix_list_ids          = []
+    protocol                 = "tcp"
+    security_group_id        = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id   = "sgr-059e3a80378fc3d10"
+    self                     = false
+    source_security_group_id = "sg-0ea31616d83f68096"
+    to_port                  = 443
+    type                     = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]:
+resource "aws_security_group_rule" "node" {
+    description              = "Cluster API to node 4443/tcp webhook"
+    from_port                = 4443
+    id                       = "sgrule-2490497429"
+    prefix_list_ids          = []
+    protocol                 = "tcp"
+    security_group_id        = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id   = "sgr-0f1e477a282425394"
+    self                     = false
+    source_security_group_id = "sg-0ea31616d83f68096"
+    to_port                  = 4443
+    type                     = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]:
+resource "aws_security_group_rule" "node" {
+    description              = "Cluster API to node 6443/tcp webhook"
+    from_port                = 6443
+    id                       = "sgrule-1563663875"
+    prefix_list_ids          = []
+    protocol                 = "tcp"
+    security_group_id        = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id   = "sgr-0240edc47aac931d8"
+    self                     = false
+    source_security_group_id = "sg-0ea31616d83f68096"
+    to_port                  = 6443
+    type                     = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]:
+resource "aws_security_group_rule" "node" {
+    description              = "Cluster API to node 8443/tcp webhook"
+    from_port                = 8443
+    id                       = "sgrule-1315938850"
+    prefix_list_ids          = []
+    protocol                 = "tcp"
+    security_group_id        = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id   = "sgr-0c7a01b9e77f37631"
+    self                     = false
+    source_security_group_id = "sg-0ea31616d83f68096"
+    to_port                  = 8443
+    type                     = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]:
+resource "aws_security_group_rule" "node" {
+    description              = "Cluster API to node 9443/tcp webhook"
+    from_port                = 9443
+    id                       = "sgrule-718180841"
+    prefix_list_ids          = []
+    protocol                 = "tcp"
+    security_group_id        = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id   = "sgr-05f060e47b66e6a2d"
+    self                     = false
+    source_security_group_id = "sg-0ea31616d83f68096"
+    to_port                  = 9443
+    type                     = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]:
+resource "aws_security_group_rule" "node" {
+    description              = "Cluster API to node kubelets"
+    from_port                = 10250
+    id                       = "sgrule-2219457307"
+    prefix_list_ids          = []
+    protocol                 = "tcp"
+    security_group_id        = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id   = "sgr-0aa8c990c8214dba0"
+    self                     = false
+    source_security_group_id = "sg-0ea31616d83f68096"
+    to_port                  = 10250
+    type                     = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]:
+resource "aws_security_group_rule" "node" {
+    description            = "Node to node ingress on ephemeral ports"
+    from_port              = 1025
+    id                     = "sgrule-3047477692"
+    prefix_list_ids        = []
+    protocol               = "tcp"
+    security_group_id      = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id = "sgr-02cf1cd16b65fc7d1"
+    self                   = true
+    to_port                = 65535
+    type                   = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]:
+resource "aws_security_group_rule" "node" {
+    description            = "Node to node CoreDNS"
+    from_port              = 53
+    id                     = "sgrule-3642120206"
+    prefix_list_ids        = []
+    protocol               = "tcp"
+    security_group_id      = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id = "sgr-0349411aca5231ce3"
+    self                   = true
+    to_port                = 53
+    type                   = "ingress"
+}
+
+# module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]:
+resource "aws_security_group_rule" "node" {
+    description            = "Node to node CoreDNS UDP"
+    from_port              = 53
+    id                     = "sgrule-2102000609"
+    prefix_list_ids        = []
+    protocol               = "udp"
+    security_group_id      = "sg-0ade07234ea2ca0ef"
+    security_group_rule_id = "sgr-09c5d770becae84a7"
+    self                   = true
+    to_port                = 53
+    type                   = "ingress"
+}
+
+# module.eks.time_sleep.this[0]:
+resource "time_sleep" "this" {
+    create_duration = "30s"
+    id              = "2025-09-05T07:50:45Z"
+    triggers        = {
+        "cluster_certificate_authority_data" = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJYVBPMzhjcjRYVTR3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBNU1EVXdOak0zTWpWYUZ3MHpOVEE1TURNd05qUXlNalZhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUMyT1JMZmhNbXJzajRrOWFsSTViaTdQdy9manQ2ZmNPTm1mQjlISUlubU8wbUlyT09DcEEvMGxieWcKalZzRkh3SkFIeEZCTUxjdy93MG0zNjRid3hQMUMwbWtEWTczZSswRkNwWVZweEtxY0VoSXhkY2xkZkFXb0lnYwpOVVBHczA5TXFLN3E0WFUzdTVPZ1V6RzlqSmZ3Q0RzVlp4cE1waGtlWHJPWGIrS3poNUZPUVByRmtSYk9Ecm5BClkzb0NrU1YvY2xmc2xNcjNCUyszUHBvSDFlNFQrSkVpVUJHS3EvZlcxUzFOay82KzBOTHYxSzIxZ0xDVFFmNjAKdHRXK21QR0hDSXduV2s2UnpNR3lqQTNQSmx5dytSdXlnUklycWtEeHBrZUgwM3ZiTG5NNTR3WWgxTlYvVHlqVQp6ei90bHdWRVEwcVZkWnp1TGlWRDdONFFRaHd4QWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJRUG9aWjlPUExWanh2T2FVK1pQS0Iyc2NjT1VqQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQTR1WDNiZWZuRwpUWmRRWXp4K1FsN1llbXNtT1VZUHpCcmFMbytiRjNnaDkzN2hsTnpobjJMaG1vZDVxa0hhdGtva3dPTTRIMkNOCk0rdmt6TjNjbGJiT25GWC9LUC9BMzJpUitsZm1jclJFTEs2MFYvMFFadW9jaUxVYjRuTDZMNUYxb1A4STkrYjkKbWhNRkJWQW0wSW5IVWR0L0poSDNEZWhxR3EwemwwRUFIcVI4YWF6Zk56K0gyRHkxeDZFS3BiaVlrVEw3L2E2ZApoYmRQbGJCb2RXQzVLdG1TNFd5SlF2UXBjVTlDVTBiYkFyQXdGVmgveWY5alJXVk4rUkovQjFRdVNuaERKR2RtCks3UWVCMFhQTmVWYVhHaG9odExxUGlYUkpFZ3pOYmVuRW81N2IwOWhUOFlSaytpLytxRkxSODR1ZVkrdEU0ZGoKQkdzK2g3RzUyUDQ5Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+        "cluster_endpoint"                   = "https://E05FB674494B647917F2A088BBE07C67.gr7.ap-south-1.eks.amazonaws.com"
+        "cluster_name"                       = "fashionassit"
+        "cluster_service_cidr"               = "10.100.0.0/16"
+        "cluster_version"                    = "1.32"
+    }
+}
+
+
+# module.eks.module.eks_managed_node_group["default"].data.aws_caller_identity.current:
+data "aws_caller_identity" "current" {
+    account_id = "583192270368"
+    arn        = "arn:aws:iam::583192270368:user/Smit"
+    id         = "583192270368"
+    user_id    = "AIDAYPSHX2YQBOXKSZCX4"
+}
+
+# module.eks.module.eks_managed_node_group["default"].data.aws_iam_policy_document.assume_role_policy[0]:
+data "aws_iam_policy_document" "assume_role_policy" {
+    id            = "2560088296"
+    json          = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = "sts:AssumeRole"
+                    Effect    = "Allow"
+                    Principal = {
+                        Service = "ec2.amazonaws.com"
+                    }
+                    Sid       = "EKSNodeAssumeRole"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    minified_json = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = "sts:AssumeRole"
+                    Effect    = "Allow"
+                    Principal = {
+                        Service = "ec2.amazonaws.com"
+                    }
+                    Sid       = "EKSNodeAssumeRole"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    version       = "2012-10-17"
+
+    statement {
+        actions       = [
+            "sts:AssumeRole",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = []
+        sid           = "EKSNodeAssumeRole"
+
+        principals {
+            identifiers = [
+                "ec2.amazonaws.com",
+            ]
+            type        = "Service"
+        }
+    }
+}
+
+# module.eks.module.eks_managed_node_group["default"].data.aws_partition.current:
+data "aws_partition" "current" {
+    dns_suffix         = "amazonaws.com"
+    id                 = "aws"
+    partition          = "aws"
+    reverse_dns_prefix = "com.amazonaws"
+}
+
+# module.eks.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]:
+resource "aws_eks_node_group" "this" {
+    ami_type               = "AL2023_x86_64_STANDARD"
+    arn                    = "arn:aws:eks:ap-south-1:583192270368:nodegroup/fashionassit/default-20250905064840154500000001/72cc8c51-2b3a-cfb2-a843-0b10f4624d6b"
+    capacity_type          = "ON_DEMAND"
+    cluster_name           = "fashionassit"
+    disk_size              = 0
+    id                     = "fashionassit:default-20250905064840154500000001"
+    instance_types         = [
+        "t3.medium",
+    ]
+    labels                 = {}
+    node_group_name        = "default-20250905064840154500000001"
+    node_group_name_prefix = "default-"
+    node_role_arn          = "arn:aws:iam::583192270368:role/default-eks-node-group-20250905063734841600000004"
+    release_version        = "1.32.7-20250829"
+    resources              = [
+        {
+            autoscaling_groups              = [
+                {
+                    name = "eks-default-20250905064840154500000001-72cc8c51-2b3a-cfb2-a843-0b10f4624d6b"
+                },
+            ]
+            remote_access_security_group_id = null
+        },
+    ]
+    status                 = "ACTIVE"
+    subnet_ids             = [
+        "subnet-00e6626576fc24d03",
+        "subnet-099eb3166e0900346",
+        "subnet-0e298ceb8b68ecc78",
+    ]
+    tags                   = {
+        "Managed" = "terraform"
+        "Name"    = "default"
+    }
+    tags_all               = {
+        "Managed" = "terraform"
+        "Name"    = "default"
+    }
+    version                = "1.32"
+
+    launch_template {
+        id      = "lt-0b6b1a4c4c6ee4475"
+        name    = "default-2025090506451388450000000e"
+        version = "1"
+    }
+
+    scaling_config {
+        desired_size = 1
+        max_size     = 2
+        min_size     = 1
+    }
+
+    timeouts {}
+
+    update_config {
+        max_unavailable            = 0
+        max_unavailable_percentage = 33
+    }
+}
+
+# module.eks.module.eks_managed_node_group["default"].aws_iam_role.this[0]:
+resource "aws_iam_role" "this" {
+    arn                   = "arn:aws:iam::583192270368:role/default-eks-node-group-20250905063734841600000004"
+    assume_role_policy    = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = "sts:AssumeRole"
+                    Effect    = "Allow"
+                    Principal = {
+                        Service = "ec2.amazonaws.com"
+                    }
+                    Sid       = "EKSNodeAssumeRole"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    create_date           = "2025-09-05T06:37:31Z"
+    description           = "EKS managed node group IAM role"
+    force_detach_policies = true
+    id                    = "default-eks-node-group-20250905063734841600000004"
+    managed_policy_arns   = [
+        "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+        "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+        "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+    ]
+    max_session_duration  = 3600
+    name                  = "default-eks-node-group-20250905063734841600000004"
+    name_prefix           = "default-eks-node-group-"
+    path                  = "/"
+    permissions_boundary  = null
+    tags                  = {
+        "Managed" = "terraform"
+    }
+    tags_all              = {
+        "Managed" = "terraform"
+    }
+    unique_id             = "AROAYPSHX2YQOKQPBSYYS"
+}
+
+# module.eks.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEC2ContainerRegistryReadOnly"]:
+resource "aws_iam_role_policy_attachment" "this" {
+    id         = "default-eks-node-group-20250905063734841600000004-2025090506373857690000000b"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    role       = "default-eks-node-group-20250905063734841600000004"
+}
+
+# module.eks.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKSWorkerNodePolicy"]:
+resource "aws_iam_role_policy_attachment" "this" {
+    id         = "default-eks-node-group-20250905063734841600000004-2025090506373857390000000a"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+    role       = "default-eks-node-group-20250905063734841600000004"
+}
+
+# module.eks.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKS_CNI_Policy"]:
+resource "aws_iam_role_policy_attachment" "this" {
+    id         = "default-eks-node-group-20250905063734841600000004-20250905063738573900000009"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+    role       = "default-eks-node-group-20250905063734841600000004"
+}
+
+# module.eks.module.eks_managed_node_group["default"].aws_launch_template.this[0]:
+resource "aws_launch_template" "this" {
+    arn                                  = "arn:aws:ec2:ap-south-1:583192270368:launch-template/lt-0b6b1a4c4c6ee4475"
+    default_version                      = 1
+    description                          = "Custom launch template for default EKS managed node group"
+    disable_api_stop                     = false
+    disable_api_termination              = false
+    ebs_optimized                        = null
+    id                                   = "lt-0b6b1a4c4c6ee4475"
+    image_id                             = null
+    instance_initiated_shutdown_behavior = null
+    instance_type                        = null
+    kernel_id                            = null
+    key_name                             = null
+    latest_version                       = 1
+    name                                 = "default-2025090506451388450000000e"
+    name_prefix                          = "default-"
+    ram_disk_id                          = null
+    security_group_names                 = []
+    tags                                 = {
+        "Managed" = "terraform"
+    }
+    tags_all                             = {
+        "Managed" = "terraform"
+    }
+    update_default_version               = true
+    user_data                            = null
+    vpc_security_group_ids               = [
+        "sg-0ade07234ea2ca0ef",
+    ]
+
+    metadata_options {
+        http_endpoint               = "enabled"
+        http_protocol_ipv6          = null
+        http_put_response_hop_limit = 2
+        http_tokens                 = "required"
+        instance_metadata_tags      = null
+    }
+
+    monitoring {
+        enabled = true
+    }
+
+    tag_specifications {
+        resource_type = "instance"
+        tags          = {
+            "Managed" = "terraform"
+            "Name"    = "default"
+        }
+    }
+    tag_specifications {
+        resource_type = "network-interface"
+        tags          = {
+            "Managed" = "terraform"
+            "Name"    = "default"
+        }
+    }
+    tag_specifications {
+        resource_type = "volume"
+        tags          = {
+            "Managed" = "terraform"
+            "Name"    = "default"
+        }
+    }
+}
+
+
+# module.eks.module.eks_managed_node_group["default"].module.user_data.null_resource.validate_cluster_service_cidr:
+resource "null_resource" "validate_cluster_service_cidr" {
+    id = "8414310056152821767"
+}
+
+
+# module.eks.module.kms.data.aws_caller_identity.current[0]:
+data "aws_caller_identity" "current" {
+    account_id = "583192270368"
+    arn        = "arn:aws:iam::583192270368:user/Smit"
+    id         = "583192270368"
+    user_id    = "AIDAYPSHX2YQBOXKSZCX4"
+}
+
+# module.eks.module.kms.data.aws_iam_policy_document.this[0]:
+data "aws_iam_policy_document" "this" {
+    id            = "1662492586"
+    json          = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = "kms:*"
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:root"
+                    }
+                    Resource  = "*"
+                    Sid       = "Default"
+                },
+                {
+                    Action    = [
+                        "kms:Update*",
+                        "kms:UntagResource",
+                        "kms:TagResource",
+                        "kms:ScheduleKeyDeletion",
+                        "kms:Revoke*",
+                        "kms:ReplicateKey",
+                        "kms:Put*",
+                        "kms:List*",
+                        "kms:ImportKeyMaterial",
+                        "kms:Get*",
+                        "kms:Enable*",
+                        "kms:Disable*",
+                        "kms:Describe*",
+                        "kms:Delete*",
+                        "kms:Create*",
+                        "kms:CancelKeyDeletion",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:user/Smit"
+                    }
+                    Resource  = "*"
+                    Sid       = "KeyAdministration"
+                },
+                {
+                    Action    = [
+                        "kms:ReEncrypt*",
+                        "kms:GenerateDataKey*",
+                        "kms:Encrypt",
+                        "kms:DescribeKey",
+                        "kms:Decrypt",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:role/fashionassit-cluster-20250905063734841600000001"
+                    }
+                    Resource  = "*"
+                    Sid       = "KeyUsage"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    minified_json = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = "kms:*"
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:root"
+                    }
+                    Resource  = "*"
+                    Sid       = "Default"
+                },
+                {
+                    Action    = [
+                        "kms:Update*",
+                        "kms:UntagResource",
+                        "kms:TagResource",
+                        "kms:ScheduleKeyDeletion",
+                        "kms:Revoke*",
+                        "kms:ReplicateKey",
+                        "kms:Put*",
+                        "kms:List*",
+                        "kms:ImportKeyMaterial",
+                        "kms:Get*",
+                        "kms:Enable*",
+                        "kms:Disable*",
+                        "kms:Describe*",
+                        "kms:Delete*",
+                        "kms:Create*",
+                        "kms:CancelKeyDeletion",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:user/Smit"
+                    }
+                    Resource  = "*"
+                    Sid       = "KeyAdministration"
+                },
+                {
+                    Action    = [
+                        "kms:ReEncrypt*",
+                        "kms:GenerateDataKey*",
+                        "kms:Encrypt",
+                        "kms:DescribeKey",
+                        "kms:Decrypt",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:role/fashionassit-cluster-20250905063734841600000001"
+                    }
+                    Resource  = "*"
+                    Sid       = "KeyUsage"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    version       = "2012-10-17"
+
+    statement {
+        actions       = [
+            "kms:*",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "*",
+        ]
+        sid           = "Default"
+
+        principals {
+            identifiers = [
+                "arn:aws:iam::583192270368:root",
+            ]
+            type        = "AWS"
+        }
+    }
+    statement {
+        actions       = [
+            "kms:CancelKeyDeletion",
+            "kms:Create*",
+            "kms:Delete*",
+            "kms:Describe*",
+            "kms:Disable*",
+            "kms:Enable*",
+            "kms:Get*",
+            "kms:ImportKeyMaterial",
+            "kms:List*",
+            "kms:Put*",
+            "kms:ReplicateKey",
+            "kms:Revoke*",
+            "kms:ScheduleKeyDeletion",
+            "kms:TagResource",
+            "kms:UntagResource",
+            "kms:Update*",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "*",
+        ]
+        sid           = "KeyAdministration"
+
+        principals {
+            identifiers = [
+                "arn:aws:iam::583192270368:user/Smit",
+            ]
+            type        = "AWS"
+        }
+    }
+    statement {
+        actions       = [
+            "kms:Decrypt",
+            "kms:DescribeKey",
+            "kms:Encrypt",
+            "kms:GenerateDataKey*",
+            "kms:ReEncrypt*",
+        ]
+        effect        = "Allow"
+        not_actions   = []
+        not_resources = []
+        resources     = [
+            "*",
+        ]
+        sid           = "KeyUsage"
+
+        principals {
+            identifiers = [
+                "arn:aws:iam::583192270368:role/fashionassit-cluster-20250905063734841600000001",
+            ]
+            type        = "AWS"
+        }
+    }
+}
+
+# module.eks.module.kms.data.aws_partition.current[0]:
+data "aws_partition" "current" {
+    dns_suffix         = "amazonaws.com"
+    id                 = "aws"
+    partition          = "aws"
+    reverse_dns_prefix = "com.amazonaws"
+}
+
+# module.eks.module.kms.aws_kms_alias.this["cluster"]:
+resource "aws_kms_alias" "this" {
+    arn            = "arn:aws:kms:ap-south-1:583192270368:alias/eks/fashionassit"
+    id             = "alias/eks/fashionassit"
+    name           = "alias/eks/fashionassit"
+    name_prefix    = null
+    target_key_arn = "arn:aws:kms:ap-south-1:583192270368:key/5d462d66-d26e-4a93-8b3b-bb60ec508562"
+    target_key_id  = "5d462d66-d26e-4a93-8b3b-bb60ec508562"
+}
+
+# module.eks.module.kms.aws_kms_key.this[0]:
+resource "aws_kms_key" "this" {
+    arn                                = "arn:aws:kms:ap-south-1:583192270368:key/5d462d66-d26e-4a93-8b3b-bb60ec508562"
+    bypass_policy_lockout_safety_check = false
+    custom_key_store_id                = null
+    customer_master_key_spec           = "SYMMETRIC_DEFAULT"
+    description                        = "fashionassit cluster encryption key"
+    enable_key_rotation                = true
+    id                                 = "5d462d66-d26e-4a93-8b3b-bb60ec508562"
+    is_enabled                         = true
+    key_id                             = "5d462d66-d26e-4a93-8b3b-bb60ec508562"
+    key_usage                          = "ENCRYPT_DECRYPT"
+    multi_region                       = false
+    policy                             = jsonencode(
+        {
+            Statement = [
+                {
+                    Action    = "kms:*"
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:root"
+                    }
+                    Resource  = "*"
+                    Sid       = "Default"
+                },
+                {
+                    Action    = [
+                        "kms:Update*",
+                        "kms:UntagResource",
+                        "kms:TagResource",
+                        "kms:ScheduleKeyDeletion",
+                        "kms:Revoke*",
+                        "kms:ReplicateKey",
+                        "kms:Put*",
+                        "kms:List*",
+                        "kms:ImportKeyMaterial",
+                        "kms:Get*",
+                        "kms:Enable*",
+                        "kms:Disable*",
+                        "kms:Describe*",
+                        "kms:Delete*",
+                        "kms:Create*",
+                        "kms:CancelKeyDeletion",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:user/Smit"
+                    }
+                    Resource  = "*"
+                    Sid       = "KeyAdministration"
+                },
+                {
+                    Action    = [
+                        "kms:ReEncrypt*",
+                        "kms:GenerateDataKey*",
+                        "kms:Encrypt",
+                        "kms:DescribeKey",
+                        "kms:Decrypt",
+                    ]
+                    Effect    = "Allow"
+                    Principal = {
+                        AWS = "arn:aws:iam::583192270368:role/fashionassit-cluster-20250905063734841600000001"
+                    }
+                    Resource  = "*"
+                    Sid       = "KeyUsage"
+                },
+            ]
+            Version   = "2012-10-17"
+        }
+    )
+    rotation_period_in_days            = 365
+    tags                               = {
+        "Managed"               = "terraform"
+        "terraform-aws-modules" = "eks"
+    }
+    tags_all                           = {
+        "Managed"               = "terraform"
+        "terraform-aws-modules" = "eks"
+    }
+    xks_key_id                         = null
+}
+
+
+Outputs:
+
+cluster_endpoint = "https://E05FB674494B647917F2A088BBE07C67.gr7.ap-south-1.eks.amazonaws.com"
+cluster_oidc_issuer = null
