@@ -69,9 +69,9 @@ variable "ecr_repo_name" {
 }
 
 variable "image_tag" {
-  description = "Image tag used when pushing (example: v1.0.0 or sha)"
+  description = "Image tag used when pushing (example: v1.0.0 or commit SHA)"
   type        = string
-  default     = "v1.0.0"
+  default     = "d5016a905f241d621d8ddb3d4f05e7b700037f44"
 }
 
 # Kubernetes app variables
@@ -85,11 +85,6 @@ variable "app_name" {
   default = "myapp"
 }
 
-variable "image" {
-  type    = string
-  default = "hashicorp/http-echo:0.2.3"
-}
-
 variable "replicas" {
   type    = number
   default = 1
@@ -97,7 +92,7 @@ variable "replicas" {
 
 variable "container_port" {
   type    = number
-  default = 5678
+  default = 5000
 }
 
 variable "service_port" {
@@ -110,4 +105,9 @@ variable "node_role_name" {
   description = "If set, attach ECR read policy to this IAM role (instance role name). Leave empty to skip."
   type        = string
   default     = ""
+}
+
+# Local helper to construct the full ECR image URI from variables
+locals {
+  image = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.ecr_repo_name}:${var.image_tag}"
 }

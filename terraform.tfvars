@@ -20,10 +20,9 @@ max_size       = 2
 # ECR values
 aws_account_id = "583192270368"
 ecr_repo_name  = "myapp"
-image_tag      = "v1.0.0"
 
-# Optional: after you push image to ECR, you can set this to make Terraform update the k8s Deployment:
-# image = "583192270368.dkr.ecr.ap-south-1.amazonaws.com/myapp:v1.0.0"
+# Use the SHA tag that exists in your ECR
+image_tag      = "d5016a905f241d621d8ddb3d4f05e7b700037f44"
 
 # Node role for attaching ECR pull policy
 node_role_name = "default-eks-node-group-20250905063734841600000004"
