@@ -13,13 +13,13 @@ provider "aws" {
 }
 
 provider "kubernetes" {
-  config_path    = "C:\\Users\\admin\\.kube\\config"
+  config_path    = pathexpand("~/.kube/config")
   config_context = "arn:aws:eks:${var.aws_region}:${var.aws_account_id}:cluster/${var.cluster_name}"
 }
 
 provider "helm" {
   kubernetes = {
-    config_path    = "C:\\Users\\admin\\.kube\\config"
+    config_path    = pathexpand("~/.kube/config")
     config_context = "arn:aws:eks:${var.aws_region}:${var.aws_account_id}:cluster/${var.cluster_name}"
   }
 }
