@@ -20,7 +20,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: .   # repo root where your .tf files live
+        working-directory: .
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,16 +37,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            ${{ env.AWS_REGION }}
 
-      # Optional: provide kubeconfig from a secret so the Kubernetes provider can connect in CI
-      # Only needed if your Terraform still depends on a kubeconfig file
       - name: Write kubeconfig (if provided)
-        if: ${{ secrets.KUBECONFIG_DATA != '' }}
+        env:
+          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+        if: ${{ env.KUBECONFIG_DATA != '' }}
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
+          echo "$KUBECONFIG_DATA" > $HOME/.kube/config
           echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
-      # Fail fast if the SQL dump file required by filemd5() is missing
       - name: Verify required files
         run: |
           if [ ! -f "./db/dump.sql" ]; then
