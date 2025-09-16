@@ -129,11 +129,10 @@ variable "run_restore" {
 }
 
 variable "restore_sql_path" {
-  description = "Path to SQL file to restore (relative to repo root). Example: ../db/dump.sql from terraform module."
+  description = "Path to SQL file to restore (relative to repo root)."
   type        = string
-  default     = "../db/dump.sql"
+  default     = "./db/dump.sql"
 }
-
 
 # --- New variables for EC2/SSM restore ---
 variable "public_subnet_id" {
