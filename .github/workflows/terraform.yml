@@ -22,7 +22,7 @@ jobs:
         shell: bash
         working-directory: .
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Terraform
@@ -30,14 +30,14 @@ jobs:
         with:
           terraform_version: 1.5.7
 
-      - name: Configure AWS credentials (secrets)
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            ${{ env.AWS_REGION }}
 
-      - name: Write kubeconfig (if provided)
+      - name: Write kubeconfig (if needed)
         env:
           KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
         if: ${{ env.KUBECONFIG_DATA != '' }}
@@ -45,6 +45,13 @@ jobs:
           mkdir -p $HOME/.kube
           echo "$KUBECONFIG_DATA" > $HOME/.kube/config
           echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+
+      - name: Check dump.sql file exists
+        run: |
+          if [ ! -f "./db/dump.sql" ]; then
+            echo "::error title=Missing file::db/dump.sql not found. Commit it or update Terraform to use \${path.module}/db/dump.sql (filemd5 requires a real file)."
+            exit 1
+          fi
 
       - name: Terraform init
         run: terraform init -input=false
@@ -55,12 +62,12 @@ jobs:
       - name: Terraform plan (save file)
         run: terraform plan -out=tfplan -input=false
 
-      - name: Upload plan artifact
+      - name: Upload terraform plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: tfplan
 
-      - name: Terraform apply (saved plan on main)
+      - name: Terraform apply (saved plan on main branch)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform apply -input=false -auto-approve tfplan
