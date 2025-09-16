@@ -39,7 +39,7 @@ data "aws_iam_role" "node_role_lookup" {
 }
 
 resource "aws_iam_role_policy_attachment" "node_ecr_read" {
-  count     = var.node_role_name != "" ? 1 : 0
-  role      = data.aws_iam_role.node_role_lookup[count.index].name
+  count      = var.node_role_name != "" ? 1 : 0
+  role       = data.aws_iam_role.node_role_lookup[count.index].name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }

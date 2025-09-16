@@ -27,11 +27,11 @@ resource "aws_db_subnet_group" "db_subnets" {
 }
 
 resource "aws_db_instance" "pg" {
-  identifier         = "${var.app_name}-db-target"
-  engine             = "postgres"
-  engine_version     = "16.4"
-  instance_class     = "db.t3.medium"
-  allocated_storage  = 20
+  identifier        = "${var.app_name}-db-target"
+  engine            = "postgres"
+  engine_version    = "16.4"
+  instance_class    = "db.t3.medium"
+  allocated_storage = 20
 
   db_name  = var.db_name
   username = "masteruser"

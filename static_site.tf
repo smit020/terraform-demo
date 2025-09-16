@@ -1,34 +1,34 @@
-﻿# static_site.tf
+# static_site.tf
 ############################
 # S3 Website (public) + CloudFront custom origin (Website Endpoint)
 ############################
 
 locals {
-  bucket_name = "fashionassit1"  # must be globally unique
-  dist_dir   = "${path.module}/dist"
-  dist_files = fileset(local.dist_dir, "**")
+  bucket_name = "fashionassit1" # must be globally unique
+  dist_dir    = "${path.module}/dist"
+  dist_files  = fileset(local.dist_dir, "**")
 
   content_types = {
-    html = "text/html"
-    css  = "text/css"
-    js   = "application/javascript"
-    mjs  = "application/javascript"
-    json = "application/json"
-    map  = "application/json"
-    png  = "image/png"
-    jpg  = "image/jpeg"
-    jpeg = "image/jpeg"
-    gif  = "image/gif"
-    svg  = "image/svg+xml"
-    webp = "image/webp"
-    ico  = "image/x-icon"
-    woff = "font/woff"
-    woff2= "font/woff2"
-    ttf  = "font/ttf"
-    otf  = "font/otf"
-    wasm = "application/wasm"
-    xml  = "application/xml"
-    pdf  = "application/pdf"
+    html  = "text/html"
+    css   = "text/css"
+    js    = "application/javascript"
+    mjs   = "application/javascript"
+    json  = "application/json"
+    map   = "application/json"
+    png   = "image/png"
+    jpg   = "image/jpeg"
+    jpeg  = "image/jpeg"
+    gif   = "image/gif"
+    svg   = "image/svg+xml"
+    webp  = "image/webp"
+    ico   = "image/x-icon"
+    woff  = "font/woff"
+    woff2 = "font/woff2"
+    ttf   = "font/ttf"
+    otf   = "font/otf"
+    wasm  = "application/wasm"
+    xml   = "application/xml"
+    pdf   = "application/pdf"
   }
 }
 
@@ -58,7 +58,7 @@ resource "aws_s3_bucket_public_access_block" "site" {
 resource "aws_s3_bucket_website_configuration" "site" {
   bucket = aws_s3_bucket.site.id
   index_document { suffix = "index.html" }
-  error_document { key    = "error.html" }
+  error_document { key = "error.html" }
 }
 
 # Public-read policy so S3 website endpoint can serve files
@@ -67,11 +67,11 @@ resource "aws_s3_bucket_policy" "public_read" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Sid: "PublicReadForWebsite",
-      Effect: "Allow",
-      Principal: "*",
-      Action: ["s3:GetObject"],
-      Resource: "${aws_s3_bucket.site.arn}/*"
+      Sid : "PublicReadForWebsite",
+      Effect : "Allow",
+      Principal : "*",
+      Action : ["s3:GetObject"],
+      Resource : "${aws_s3_bucket.site.arn}/*"
     }]
   })
 }
@@ -99,7 +99,7 @@ resource "aws_s3_object" "dist" {
   )
 
   # Cache policy: HTML entry points no-cache; hashed assets long cache; others short
-  cache_control = contains(["index.html","error.html"], lower(replace(replace(basename(each.value), ".br", ""), ".gz", ""))) ? "no-cache, no-store, must-revalidate" : (can(regex("[.-][a-f0-9]{8,}", basename(each.value))) ? "public, max-age=31536000, immutable" : "public, max-age=300")
+  cache_control = contains(["index.html", "error.html"], lower(replace(replace(basename(each.value), ".br", ""), ".gz", ""))) ? "no-cache, no-store, must-revalidate" : (can(regex("[.-][a-f0-9]{8,}", basename(each.value))) ? "public, max-age=31536000, immutable" : "public, max-age=300")
 }
 
 # CloudFront in front of S3 Website Endpoint (Custom Origin)
@@ -152,4 +152,4 @@ resource "aws_cloudfront_distribution" "cdn" {
 
 # Outputs
 output "s3_website_endpoint" { value = aws_s3_bucket_website_configuration.site.website_endpoint }
-output "cloudfront_domain"   { value = aws_cloudfront_distribution.cdn.domain_name }
+output "cloudfront_domain" { value = aws_cloudfront_distribution.cdn.domain_name }
