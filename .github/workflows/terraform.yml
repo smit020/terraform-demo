@@ -20,7 +20,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: .   # repo root (your .tf files are here)
+        working-directory: .   # repo root where your .tf files live
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,8 +37,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            ${{ env.AWS_REGION }}
 
-      - name: Who am I in AWS?
-        run: aws sts get-caller-identity
+      # Optional: provide kubeconfig from a secret so the Kubernetes provider can connect in CI
+      # Only needed if your Terraform still depends on a kubeconfig file
+      - name: Write kubeconfig (if provided)
+        if: ${{ secrets.KUBECONFIG_DATA != '' }}
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
+          echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+
+      # Fail fast if the SQL dump file required by filemd5() is missing
+      - name: Verify required files
+        run: |
+          if [ ! -f "./db/dump.sql" ]; then
+            echo "::error title=Missing file::db/dump.sql not found. Commit it or update Terraform to use \${path.module}/db/dump.sql (filemd5 requires a real file)."
+            exit 1
+          fi
 
       - name: Terraform init
         run: terraform init -input=false
