@@ -25,6 +25,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Terraform plugin cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+            .terraform/plugins
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
+
+      - name: Check dump.sql file exists
+        run: |
+          if [ ! -f "./db/dump.sql" ]; then
+            echo "::error title=Missing file::db/dump.sql not found. Commit it or update Terraform to use \${path.module}/db/dump.sql (filemd5 requires a real file)."
+            exit 1
+          fi
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -46,13 +61,6 @@ jobs:
           echo "$KUBECONFIG_DATA" > $HOME/.kube/config
           echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
-      - name: Check dump.sql file exists
-        run: |
-          if [ ! -f "./db/dump.sql" ]; then
-            echo "::error title=Missing file::db/dump.sql not found. Commit it or update Terraform to use \${path.module}/db/dump.sql (filemd5 requires a real file)."
-            exit 1
-          fi
-
       - name: Terraform init
         run: terraform init -input=false
 
@@ -71,3 +79,7 @@ jobs:
       - name: Terraform apply (saved plan on main branch)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "::error::Terraform job failed. Please check the logs."
