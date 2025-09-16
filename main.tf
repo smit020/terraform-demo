@@ -26,41 +26,20 @@ module "eks" {
   tags                                     = var.tags
 }
 
-# --- Create ECR repository ---
 resource "aws_ecr_repository" "app" {
   name                 = var.ecr_repo_name
   image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-
-  tags = merge(
-    var.tags,
-    {
-      Name = var.ecr_repo_name
-    }
-  )
+  image_scanning_configuration { scan_on_push = true }
+  tags = merge(var.tags, { Name = var.ecr_repo_name })
 }
 
-# -------------------------
-# Attach ECR ReadOnly policy to worker node role (conditional)
-# -------------------------
-# If you set var.node_role_name in terraform.tfvars, we look it up and attach the managed policy.
-# If var.node_role_name is empty, this step is skipped.
 data "aws_iam_role" "node_role_lookup" {
   count = var.node_role_name != "" ? 1 : 0
   name  = var.node_role_name
 }
 
 resource "aws_iam_role_policy_attachment" "node_ecr_read" {
-  count      = var.node_role_name != "" ? 1 : 0
-  role       = data.aws_iam_role.node_role_lookup[0].name
+  count     = var.node_role_name != "" ? 1 : 0
+  role      = data.aws_iam_role.node_role_lookup[count.index].name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
-
-# --- Alternative: If your EKS module later exposes node role name, uncomment and use:
-# resource "aws_iam_role_policy_attachment" "node_ecr_read_via_module" {
-#   role       = module.eks.node_iam_role_name
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-# }

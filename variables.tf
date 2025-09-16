@@ -1,3 +1,4 @@
+# --- Core ---
 variable "aws_region" {
   type    = string
   default = "ap-south-1"
@@ -28,7 +29,7 @@ variable "min_size" {
 
 variable "desired_size" {
   type    = number
-  default = 0
+  default = 1
 }
 
 variable "max_size" {
@@ -69,12 +70,19 @@ variable "ecr_repo_name" {
 }
 
 variable "image_tag" {
-  description = "Image tag used when pushing (example: v1.0.0 or commit SHA)"
+  description = "Image tag used"
   type        = string
   default     = "d5016a905f241d621d8ddb3d4f05e7b700037f44"
 }
 
-# Kubernetes app variables
+# Optional: IAM instance role for node group
+variable "node_role_name" {
+  description = "EKS worker node instance role name (empty to skip)"
+  type        = string
+  default     = ""
+}
+
+# --- Kubernetes app variables ---
 variable "namespace" {
   type    = string
   default = "default"
@@ -100,14 +108,46 @@ variable "service_port" {
   default = 80
 }
 
-# optional: IAM instance role name for EKS worker nodes
-variable "node_role_name" {
-  description = "If set, attach ECR read policy to this IAM role (instance role name). Leave empty to skip."
+# --- New target RDS ---
+variable "db_name" {
+  description = "Name for the new (target) database"
   type        = string
-  default     = ""
+  default     = "myappdb"
 }
 
-# Local helper to construct the full ECR image URI from variables
-locals {
-  image = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.ecr_repo_name}:${var.image_tag}"
+variable "db_master_password" {
+  description = "Master password for new RDS"
+  type        = string
+  sensitive   = true
+}
+
+# --- Automatic restore configuration ---
+variable "run_restore" {
+  description = "Whether to run the SQL restore after RDS creation (true/false)"
+  type        = bool
+  default     = true
+}
+
+variable "restore_sql_path" {
+  description = "Path to SQL file to restore (relative to repo root). Example: ../db/dump.sql from terraform module."
+  type        = string
+  default     = "../db/dump.sql"
+}
+
+# --- New variables for EC2/SSM restore ---
+variable "public_subnet_id" {
+  description = "Public subnet id where the temporary EC2 will be launched"
+  type        = string
+}
+
+variable "restore_instance_type" {
+  description = "Instance type for restore machine"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "restore_s3_bucket" {
+  description = "Optional S3 bucket name for the SQL dump (leave empty to auto-generate)"
+  type        = string
+  default     = ""
 }

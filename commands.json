@@ -1,0 +1,19 @@
+﻿{
+    "commands":  [
+                     "echo \u0027=== /etc/redhat-release ===\u0027",
+                     "ls -l /etc/redhat-release || true",
+                     "cat /etc/redhat-release || true",
+                     "",
+                     "echo \u0027=== installed pgdg rpm packages ===\u0027",
+                     "rpm -qa | grep -i pgdg || true",
+                     "",
+                     "echo \u0027=== yum enabled repos (first 80 lines) ===\u0027",
+                     "yum repolist enabled | sed -n \u00271,80p\u0027 || true",
+                     "",
+                     "echo \u0027=== /tmp/pg_install.log (if exists) ===\u0027",
+                     "if [ -f /tmp/pg_install.log ]; then echo \u0027---- /tmp/pg_install.log ----\u0027; sed -n \u00271,200p\u0027 /tmp/pg_install.log || true; else echo \u0027/tmp/pg_install.log not present\u0027; fi",
+                     "",
+                     "echo \u0027=== psql --version ===\u0027",
+                     "psql --version || true"
+                 ]
+}
