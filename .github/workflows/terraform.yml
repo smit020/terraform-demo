@@ -46,13 +46,6 @@ jobs:
           echo "$KUBECONFIG_DATA" > $HOME/.kube/config
           echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
-      - name: Verify required files
-        run: |
-          if [ ! -f "./db/dump.sql" ]; then
-            echo "::error title=Missing file::db/dump.sql not found. Commit it or update Terraform to use \${path.module}/db/dump.sql (filemd5 requires a real file)."
-            exit 1
-          fi
-
       - name: Terraform init
         run: terraform init -input=false
 
