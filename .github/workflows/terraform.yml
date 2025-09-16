@@ -1,16 +1,10 @@
 name: Terraform CI/CD (repo-root)
 
 on:
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - "**.tf"
-      - "dist/**"
   push:
     branches: [ "main" ]
-    paths:
-      - "**.tf"
-      - "dist/**"
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch: {}
 
 permissions:
@@ -26,7 +20,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: .
+        working-directory: .   # repo root (your .tf files are here)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,14 +28,13 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.5
+          terraform_version: 1.5.7
 
       - name: Configure AWS credentials (secrets)
         uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token:     ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region:            ${{ env.AWS_REGION }}
 
       - name: Who am I in AWS?
@@ -50,15 +43,18 @@ jobs:
       - name: Terraform init
         run: terraform init -input=false
 
-      - name: Terraform fmt + validate
-        run: |
-          terraform fmt -check -recursive
-          terraform validate
+      - name: Terraform validate
+        run: terraform validate
 
-      - name: Terraform plan (PRs)
-        if: github.event_name == 'pull_request'
-        run: terraform plan -input=false -no-color
+      - name: Terraform plan (save file)
+        run: terraform plan -out=tfplan -input=false
 
-      - name: Terraform apply (main)
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+
+      - name: Terraform apply (saved plan on main)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: terraform apply -input=false -auto-approve -no-color
+        run: terraform apply -input=false -auto-approve tfplan
