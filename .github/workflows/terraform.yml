@@ -25,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Terraform plugin cache
+      - name: Cache Terraform plugins
         uses: actions/cache@v3
         with:
           path: |
@@ -33,10 +33,10 @@ jobs:
             .terraform/plugins
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
 
-      - name: Check dump.sql file exists
+      - name: Check dump.sql exists
         run: |
           if [ ! -f "./db/dump.sql" ]; then
-            echo "::error title=Missing file::db/dump.sql not found. Commit it or update Terraform to use \${path.module}/db/dump.sql (filemd5 requires a real file)."
+            echo "::error::db/dump.sql not found in repo. Commit it or set var.restore_sql_path to an existing file."
             exit 1
           fi
 
@@ -51,15 +51,16 @@ jobs:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            ${{ env.AWS_REGION }}
-
-      - name: Write kubeconfig (if needed)
-        env:
-          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
-        if: ${{ env.KUBECONFIG_DATA != '' }}
+          
+      - name: Ensure kubeconfig for EKS (update-kubeconfig)
         run: |
           mkdir -p $HOME/.kube
-          echo "$KUBECONFIG_DATA" > $HOME/.kube/config
-          echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name fashionassit --kubeconfig $HOME/.kube/config
+        env:
+          AWS_REGION: ap-south-1
+
+      - name: Export KUBECONFIG environment variable
+        run: echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
       - name: Terraform init
         run: terraform init -input=false
