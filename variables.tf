@@ -134,6 +134,7 @@ variable "restore_sql_path" {
   default     = "../db/dump.sql"
 }
 
+
 # --- New variables for EC2/SSM restore ---
 variable "public_subnet_id" {
   description = "Public subnet id where the temporary EC2 will be launched"
