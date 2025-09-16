@@ -35,8 +35,8 @@ jobs:
 
       - name: Check dump.sql exists
         run: |
-          if [ ! -f "./db/dump.sql" ]; then
-            echo "::error::db/dump.sql not found in repo. Commit it or set var.restore_sql_path to an existing file."
+          if [ ! -f ./db/dump.sql ]; then
+            echo "::error::db/dump.sql not found in repo. Commit it or update restore_sql_path."
             exit 1
           fi
 
@@ -51,7 +51,7 @@ jobs:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            ${{ env.AWS_REGION }}
-          
+
       - name: Ensure kubeconfig for EKS (update-kubeconfig)
         run: |
           mkdir -p $HOME/.kube
