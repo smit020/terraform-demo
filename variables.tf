@@ -72,7 +72,7 @@ variable "ecr_repo_name" {
 variable "image_tag" {
   description = "Image tag used"
   type        = string
-  default     = "d5016a905f241d621d8ddb3d4f05e7b700037f44"
+  default     = ""
 }
 
 # Optional: IAM instance role for node group
@@ -150,4 +150,26 @@ variable "restore_s3_bucket" {
   description = "Optional S3 bucket name for the SQL dump (leave empty to auto-generate)"
   type        = string
   default     = ""
+}
+
+variable "github_oauth_token" {
+  description = "GitHub OAuth Token for AWS CodePipeline"
+  type        = string
+  sensitive   = true
+}
+
+variable "github_owner" {
+  description = "GitHub repository owner"
+  type        = string
+}
+
+variable "github_repo" {
+  description = "GitHub repository name"
+  type        = string
+}
+
+variable "github_branch" {
+  description = "GitHub branch to trigger pipeline on"
+  type        = string
+  default     = "main"
 }
